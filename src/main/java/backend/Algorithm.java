@@ -1,13 +1,20 @@
 package backend;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Algorithm {
-private ArrayList<Customer> customers; //all customers that are still waiting
+private ArrayList<Customer> customers; //all customers that are still waiting (handled inside, so just provide actual list of customers(with correct flag isAwaitingService()))
 private ArrayList<Vehicle> vehicles; //ALL vehicles (also those currently busy)
 
-    public Algorithm(ArrayList<Customer> customers, ArrayList<Vehicle> vehicles) {
-        this.customers = customers;
+    public Algorithm(ArrayList<Customer> customersAll, ArrayList<Vehicle> vehicles, HashSet<String> validIds) {
+        this.customers = new ArrayList<>();
+        for (Customer customer : customersAll) {
+            if (validIds.contains(customer.getId())) {
+                this.customers.add(customer);
+            }
+        }
+
         this.vehicles = vehicles;
     }
 
@@ -24,6 +31,8 @@ private ArrayList<Vehicle> vehicles; //ALL vehicles (also those currently busy)
         }
         //everything is in m/s, m, s:
         cost += (int) (util.calculateDistance(vehicle.getCoordX(), vehicle.getCoordY(), customer.getCoordX(), customer.getCoordY())/vehicle.getSpeed());
+
+        //the longer the customer is waiting, the lower the cost function
 
         return cost;
     }
