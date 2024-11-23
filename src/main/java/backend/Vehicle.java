@@ -65,6 +65,10 @@ public class Vehicle {
         return customer;
     }
 
+    public String getId(){
+        return id;
+    }
+
     /**
      * Updates the internal states of the car to drive to the desired Customer
      *
