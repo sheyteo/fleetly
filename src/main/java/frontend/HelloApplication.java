@@ -21,10 +21,12 @@ import java.util.List;
 
 public class HelloApplication extends Application {
 
-    private List<UIPoint> points = new ArrayList<>(); // The list of points to move
+    private List<UIPoint> customerPoints = new ArrayList<>(); // The list of points to move
+    private List<UIPoint> vehiclePoints = new ArrayList<>(); // The list of points to move
     private GraphicsContext gc;
     private Canvas canvas;
     Scenario scenario;
+    float dimension = 0;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -35,6 +37,7 @@ public class HelloApplication extends Application {
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
         double screenWidth = screenBounds.getWidth();
         double screenHeight = screenBounds.getHeight();
+        dimension = (float)screenHeight;
 
         // Load the scene
         Scene scene = new Scene(fxmlLoader.load(), screenWidth, screenHeight);
@@ -79,10 +82,6 @@ public class HelloApplication extends Application {
                 new KeyFrame(Duration.seconds(0.5), e -> {
                     // Draw the points and perform actions immediately
                     drawAll();
-
-
-                    // Perform any additional actions (e.g., update points or state)
-                    updatePoints();
                 })
         );
 
@@ -93,13 +92,28 @@ public class HelloApplication extends Application {
         timeline.play();
     }
 
-    private void startLogicLoop() {
-        scenario = new Scenario("");
+    private void startLogicLoop() throws InterruptedException {
+        scenario = new Scenario("fe828c1c-bac8-4441-abed-d3a7e3d34e35");
         while (true)
         {
+            var algo = new Algorithm(scenario.getCustomers(),scenario.getVehicles(),
+                    scenario.getCustomerIDset());
+
+            var list = algo.getSolution();
+
+            scenario.updateScenario(list);
+
+            Thread.sleep(100);
+
+            scenario.updateState();
+
+            customerPoints = util.customersToPoints(scenario.getCustomers(),0);
+            vehiclePoints = util.vehiclesToPoints(scenario.getVehicles(),0);
+
             System.out.println("abdfhajkfsd");
 
-
+            double delay = scenario.timeToArrival();
+            Thread.sleep((int)(delay*1000));
         }
 
     }
@@ -117,7 +131,11 @@ public class HelloApplication extends Application {
         drawGrid();
 
         // Draw all the points in the list
-        for (UIPoint point : points) {
+        for (UIPoint point : customerPoints) {
+            drawPoint(point);
+        }
+
+        for (UIPoint point : vehiclePoints) {
             drawPoint(point);
         }
     }
@@ -137,18 +155,7 @@ public class HelloApplication extends Application {
         gc.fillOval(point.getX() - 5, point.getY() - 5, 10, 10); // Draw the point as a small circle
     }
 
-    // Method to update the points list dynamically (e.g., assign a whole new array of points)
-    public void setPoints(List<UIPoint> newPoints) {
-        points = newPoints;
-    }
 
-    private void updatePoints() {
-        // Example update to points (you can modify this to perform any action)
-        // For instance, adding a new point to simulate movement or some other action
-        if (points.size() < 10) {
-            points.add(new UIPoint(Math.random() * canvas.getWidth(), Math.random() * canvas.getHeight(), Color.RED));
-        }
-    }
 
     // This method calculates the dynamic delay based on some action or state
     private double calculateDynamicDelay() {

@@ -76,7 +76,7 @@ private ArrayList<Vehicle> vehicles; //ALL vehicles (also those currently busy)
         return solutionList;
     }
 
-    ArrayList<Pair> getSolution(){
+    public ArrayList<Pair> getSolution(){
         int[][] solution = getOptimalAssignment();
         return parseSolution(solution);
     }
