@@ -61,6 +61,10 @@ public class Vehicle {
         return speed;
     }
 
+    public Customer getCustomer() {
+        return customer;
+    }
+
     /**
      * Updates the internal states of the car to drive to the desired Customer
      *
