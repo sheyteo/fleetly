@@ -40,6 +40,27 @@ public class Vehicle {
 
     // Methods for Vehicle
 
+
+    public double getCoordX() {
+        return coordX;
+    }
+
+    public double getCoordY() {
+        return coordY;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public double getRemainingTravelTime() {
+        return remainingTravelTime;
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
     /**
      * Updates the internal states of the car to drive to the desired Customer
      *

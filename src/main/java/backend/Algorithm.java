@@ -17,8 +17,9 @@ private ArrayList<Vehicle> vehicles; //ALL vehicles (also those currently busy)
     }
 
     int costFunction(Vehicle vehicle, Customer customer) {
-        //TODO
-        return 0;
+        int cost = 0;
+        if(vehicle.)
+        return cost;
     }
 
     int[][] squareMatrix(){
