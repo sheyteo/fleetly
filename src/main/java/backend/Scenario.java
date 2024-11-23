@@ -28,8 +28,8 @@ public class Scenario {
      */
     public Scenario(String scenarioID) {
         id = scenarioID; // Init ID
+        customerIDset = new HashSet<>();// Create Hashset
         updateState(); // Init Everything
-        customerIDset = new HashSet<>(); // Create Hashset
         // Fill Hashset
         for(Customer customer : customers) {
             customerIDset.add(customer.getId());
@@ -169,11 +169,11 @@ public class Scenario {
      */
     public void updateState() {
         // Catch if everything is done!
-        if(customerIDset.isEmpty()) {
-            System.out.println("SUCESS! Finished!");
-            finished = true;
-            return;
-        }
+        //if(customerIDset.isEmpty()) {
+        //    System.out.println("SUCESS! Finished!");
+        //    finished = true;
+        //    return;
+        //}
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
