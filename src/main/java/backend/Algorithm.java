@@ -39,7 +39,13 @@ private ArrayList<Vehicle> vehicles; //ALL vehicles (also those currently busy)
     int[][] squareMatrix(){
         int numberOfVehicles = vehicles.size();
         int numberOfCustomers = customers.size();
-        int[][] squareMatrix = new int[numberOfVehicles][numberOfCustomers];
+        int biggerNumber;
+        if(numberOfVehicles > numberOfCustomers){
+            biggerNumber = numberOfVehicles;
+        } else{
+            biggerNumber = numberOfCustomers;
+        }
+        int[][] squareMatrix = new int[biggerNumber][biggerNumber];
         //make the matrix square through additions of null elements on either side
         if(numberOfVehicles > numberOfCustomers){
             for(int i = 0; i < (numberOfVehicles - numberOfCustomers); i++){
