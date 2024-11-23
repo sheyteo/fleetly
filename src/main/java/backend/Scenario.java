@@ -10,6 +10,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Timer;
 
 public class Scenario {
@@ -20,7 +21,7 @@ public class Scenario {
     private final String id;
 
     // Variables initialized on the Go
-    //LocalTime endTime;
+    // LocalTime endTime;
     //LocalTime startTime;
 
     /**
@@ -30,38 +31,6 @@ public class Scenario {
     public Scenario(String scenarioID) {
         id = scenarioID;
         updateState();
-    }
-
-    /**
-     * creates a Scenario from a given ID
-     *
-     * @param scenarioID ID-String to the Scenario that should be simulated, puts it also on the
-     * @return the newly created Scenario Object
-     */
-    public static Scenario chooseScenario(String scenarioID) {
-        try {
-            HttpClient client = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("http://localhost:8080/scenarios/" + scenarioID)) // Localhost endpoint
-                    .GET()
-                    .build();
-
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            // Check if the response was successful
-            if (response.statusCode() == 200) {
-                // Parse JSON response
-                String responseBody = response.body();
-                return new Scenario(responseBody);
-            } else {
-                System.out.println("Request failed with status code: " + response.statusCode());
-            }
-        } catch (URISyntaxException e) {
-            System.err.println("Invalid URI syntax: " + e.getMessage());
-        } catch (IOException | InterruptedException e) {
-            System.err.println("An error occurred: " + e.getMessage());
-        }
-        return null;
     }
 
     /**
@@ -230,5 +199,23 @@ public class Scenario {
         for (int b = 0; b < object.getJSONArray("vehicles").length(); b++) {
             vehicles.add(new Vehicle(vehicleJSON.getJSONObject(b).toString()));
         }
+    }
+
+    /**
+     * Checks all vehicle.getRemainingTravelTime() for the shortest
+     * @return and returns this shortest time
+     */
+    public double timeToArrival(){
+        // Create an Array of the times
+        double[] helper = new double[vehicles.size()];
+
+        int i = 0;
+        for(Vehicle vehicle : vehicles){
+            helper[i] = vehicle.getRemainingTravelTime();
+            i++;
+        }
+
+        // Create a stream, find min, return it
+        return Arrays.stream(helper).min().getAsDouble();
     }
 }
