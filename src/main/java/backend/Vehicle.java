@@ -68,13 +68,4 @@ public class Vehicle {
     public String getId(){
         return id;
     }
-
-    /**
-     * Updates the internal states of the car to drive to the desired Customer
-     *
-     * @param customer
-     */
-    public void driveTo(Customer customer) {
-        isAvailable = false;
-    }
 }

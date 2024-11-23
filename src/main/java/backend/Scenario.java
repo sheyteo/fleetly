@@ -147,17 +147,25 @@ public class Scenario {
      */
     private String toJSON(){
         JSONArray vehicleJSONarray = new JSONArray();
+        int i = 0;
         for(Vehicle vehicle : vehicles){
+            if (i>0) { break; }
             // Prepare Internals for current Vehicle
-            JSONArray internal = new JSONArray();
+            JSONObject internal = new JSONObject();
 
-            internal.put((vehicle.getCustomer() != null) ? vehicle.getCustomer().getId() : 0); // There is not always one!
-            internal.put(vehicle.getId());
+            internal.put("id", vehicle.getId());
+
+            String intID = (vehicle.getCustomer() != null) ? vehicle.getCustomer().getId() : "0";
+            internal.put("customerId", intID); // There is not always one!
+
             // Put this in the Vehicle List
             vehicleJSONarray.put(internal);
+            i++;
         }
         // Wrap that in a new JSON Object, as Strign
-        return new JSONObject().put("vehicles", vehicleJSONarray.getJSONObject(0)).toString();
+        String h = new JSONObject().put("vehicles", vehicleJSONarray).toString();
+        System.out.println(h);
+        return h;
     }
 
     /**
@@ -169,7 +177,8 @@ public class Scenario {
 
         // Build PUT Request
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8090/Scenarios/update_scenario/"))
+                .uri(URI.create("http://localhost:8090/Scenarios/update_scenario/" + id))
+                .header("Content-Type", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(toJSON()))
                 .build();
 
