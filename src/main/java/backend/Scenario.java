@@ -151,7 +151,7 @@ public class Scenario {
             // Prepare Internals for current Vehicle
             JSONArray internal = new JSONArray();
 
-            internal.put((vehicle.getCustomer() != null) ? vehicle.getCustomer().id : 0); // There is not always one!
+            internal.put((vehicle.getCustomer() != null) ? vehicle.getCustomer().getId() : 0); // There is not always one!
             internal.put(vehicle.getId());
             // Put this in the Vehicle List
             vehicleJSONarray.put(internal);
