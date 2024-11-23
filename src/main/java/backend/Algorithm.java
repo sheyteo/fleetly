@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class Algorithm {
 private ArrayList<Customer> customers; //all customers that are still waiting
 private ArrayList<Vehicle> vehicles; //ALL vehicles (also those currently busy)
-private int[][] optimalAssignment;
 
     public Algorithm(ArrayList<Customer> customers, ArrayList<Vehicle> vehicles) {
         this.customers = customers;
@@ -52,7 +51,20 @@ private int[][] optimalAssignment;
         return squareMatrix;
     }
 
+    ArrayList<Pair> parseSolution(int[][] solution){
+        ArrayList<Pair> solutionList = new ArrayList<>();
+        for(int i = 0; i < solution.length; i++){
+            int v = solution[i][0];
+            int c = solution[i][1];
+            solutionList.add(new Pair(vehicles.get(v), customers.get(c)));
+        }
+        return solutionList;
+    }
 
+    ArrayList<Pair> getSolution(){
+        int[][] solution = getOptimalAssignment();
+        return parseSolution(solution);
+    }
 
 
 }
