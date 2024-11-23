@@ -17,6 +17,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.concurrent.Task;
+import startup.Startup;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -99,7 +100,14 @@ public class HelloApplication extends Application {
         Task<Void> logicTask = new Task<>() {
             @Override
             protected Void call() throws Exception {
-                scenario = new Scenario("641058b3-1d2f-4e53-8da0-c83b74e07736");
+                //scenario = new Scenario("");
+
+                // STARTING EVERYTHING
+                // Invoking the Backend
+                Startup startup = new Startup();
+                scenario = startup.getScenario();
+                // ENDE
+
                 while (true) {
                     var algo = new Algorithm(scenario.getCustomers(),
                             scenario.getVehicles(),scenario.getCustomerIDset());
@@ -123,7 +131,7 @@ public class HelloApplication extends Application {
                             + ":" + adjustedTime.getMinute() + ":" + adjustedTime.getSecond());
 
 
-                    delay = Math.max(500,(delay * 1000));
+                    delay = Math.max(500,(delay * 1000* Startup.scenario_speed));
 
                     // Add a small sleep to prevent CPU overload
                     Thread.sleep((int) delay);
@@ -234,7 +242,5 @@ public class HelloApplication extends Application {
         return Math.random() * 2 + 1; // Random delay between 1 and 3 seconds
     }
 
-    public static void main(String[] args) {
-        launch();
-    }
+    public static void main(String[] args) { launch(); }
 }

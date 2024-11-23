@@ -69,35 +69,6 @@ public class Scenario {
     }
 
     /**
-     * Initialize this scenario via. HTTP Post
-     */
-    public void initializeScenario() {
-        String url = "http://localhost:8090/Scenarios/initialize_scenario?db_scenario_id=" + id;
-
-        HttpClient client = HttpClient.newHttpClient();
-        String emptyJson = "{}"; // Leeres JSON-Objekt
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .header("Content-Type", "application/json")  // Setze den Content-Type auf application/json
-                .POST(HttpRequest.BodyPublishers.ofString(emptyJson))  // Setze den Body auf das leere JSON
-                .build();
-
-        // HTTP send
-        try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            if (response.statusCode() == 200) {
-                System.out.println("Scenario with db_scenario_id " + id + " initialized successfully.");
-            } else {
-                System.out.println("Failed to initialize scenario with db_scenario_id " + id + ". HTTP Status: " + response.statusCode());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    /**
      * Helper Function for updateScenario()
      * warps all VehicleIDs and CustomerIDs in a JSON for the Server where the Car doesn't have a customerID linked yet
      * removes this pairs from the HashSet
@@ -168,12 +139,6 @@ public class Scenario {
      * Calls updateInternals to Save the changes to this Data
      */
     public void updateState() {
-        // Catch if everything is done!
-        //if(customerIDset.isEmpty()) {
-        //    System.out.println("SUCESS! Finished!");
-        //    finished = true;
-        //    return;
-        //}
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
@@ -256,4 +221,6 @@ public class Scenario {
     public HashSet<String> getCustomerIDset() {
         return customerIDset;
     }
+
+    public String getId() {return id;}
 }
