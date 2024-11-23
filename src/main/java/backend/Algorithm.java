@@ -77,7 +77,11 @@ private ArrayList<Vehicle> vehicles; //ALL vehicles (also those currently busy)
         for(int i = 0; i < solution.length; i++){
             int v = solution[i][0];
             int c = solution[i][1];
-            solutionList.add(new Pair(vehicles.get(v), customers.get(c)));
+            if(vehicles.get(v) == null || customers.get(c) ==null){
+                continue;
+            } else{
+                solutionList.add(new Pair(vehicles.get(v), customers.get(c)));
+            }
         }
         return solutionList;
     }
