@@ -1,4 +1,6 @@
-package backend;
+package frontend;
+
+import javafx.scene.paint.Color;
 
 /**
  * class that describes a point on the UI
@@ -6,6 +8,7 @@ package backend;
 public class UIPoint {
     private double x; // X Coordinate
     private double y; // Y Coordinate
+    private Color color;
 
     /**
      * Construct a Point
@@ -15,6 +18,13 @@ public class UIPoint {
     public UIPoint(double x, double y) {
         this.x = x;
         this.y = y;
+        this.color = Color.color(1,1,1);
+    }
+
+    public UIPoint(double x, double y,Color c) {
+        this.x = x;
+        this.y = y;
+        this.color = c;
     }
 
     /**
@@ -31,5 +41,21 @@ public class UIPoint {
         float y_ration = y_API_Max / dimension;
         float x_ration = x_API_Max / dimension;
         return new UIPoint(x*x_ration, y*y_ration);
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 }

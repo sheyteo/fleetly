@@ -3,15 +3,10 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
 
 <HBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" spacing="10">
     <!-- Left Side: Map -->
-    <ImageView fitWidth="400" fitHeight="400">
-        <image>
-            <Image url="@map-image.jpg" />
-        </image>
-    </ImageView>
+    <ImageView fx:id="mapImageView" preserveRatio="true" />
 
     <!-- Right Side: Dashboard -->
     <VBox spacing="10" alignment="CENTER">
