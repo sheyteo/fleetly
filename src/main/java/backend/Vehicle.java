@@ -5,7 +5,7 @@ import org.json.JSONObject;
 public class Vehicle {
     private double coordX;
     private double coordY;
-    private Customer customer;
+    private String customerID;
     private final String id;
     private boolean isAvailable;
 
@@ -33,14 +33,10 @@ public class Vehicle {
         remainingTravelTime = object.optDouble("remainingTravelTime", 0.0d);
         speed = object.optFloat("vehicleSpeed", 0.0f);
         activeTime = object.optInt("activeTime", 0);
-
-        // Customer is empty at start
-        customer = null;
+        customerID = object.optString("customerID");
     }
 
-    // Methods for Vehicle
-
-
+    // Getter for the Variables
     public double getCoordX() {
         return coordX;
     }
@@ -61,8 +57,8 @@ public class Vehicle {
         return speed;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public String getCustomerID() {
+        return customerID;
     }
 
     public String getId(){
