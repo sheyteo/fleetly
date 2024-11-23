@@ -17,7 +17,7 @@ public class Scenario {
     private ArrayList<Customer> customers;
     private ArrayList<Vehicle> vehicles;
     private String status;
-    private String id;
+    private final String id;
 
     // Variables initialized on the Go
     //LocalTime endTime;
@@ -25,28 +25,11 @@ public class Scenario {
 
     /**
      * Constructor of Scenario
-     * @param jsonString a Scenario Json String to extract all Information
+     * @param scenarioID The ID of the Scenario on the Server, that shuould be mirrored
      */
-    public Scenario(String jsonString) {
-        // make a viable Object from
-        JSONObject object = new JSONObject(jsonString);
-
-        id = object.getString("id");
-        status = object.getString("status");
-
-        // Create Customer List
-        customers = new ArrayList<>();
-        JSONArray customerJSON = object.getJSONArray("customers");
-        for (int i = 0; i < object.getJSONArray("customers").length(); i++) {
-            customers.add(new Customer(customerJSON.getJSONObject(i).toString()));
-        }
-
-        // Create Vehicle List
-        vehicles = new ArrayList<>();
-        JSONArray vehicleJSON = object.getJSONArray("vehicles");
-        for (int b = 0; b < object.getJSONArray("vehicles").length(); b++) {
-            vehicles.add(new Vehicle(vehicleJSON.getJSONObject(b).toString()));
-        }
+    public Scenario(String scenarioID) {
+        id = scenarioID;
+        updateState();
     }
 
     /**
@@ -140,46 +123,46 @@ public class Scenario {
         }
     }
 
+
     /**
      * Helper Function for updateScenario()
-     * warps all Vehicles in a JSON
-     * @return
+     * warps all VehicleIDs and CustomerIDs in a JSON for the Server
+     * @param pairs that should be turned into a valid JSON
+     * @return The JSON String for the HTTP Put Request
      */
-    private String toJSON(){
+    private String toJSON(ArrayList<Pair> pairs){
         JSONArray vehicleJSONarray = new JSONArray();
-        int i = 0;
-        for(Vehicle vehicle : vehicles){
-            if (i>0) { break; }
+        for(Pair pair : pairs){
             // Prepare Internals for current Vehicle
             JSONObject internal = new JSONObject();
 
-            internal.put("id", vehicle.getId());
-
-            String intID = (vehicle.getCustomer() != null) ? vehicle.getCustomer().getId() : "0";
-            internal.put("customerId", intID); // There is not always one!
+            internal.put("id", pair.getVehicle().getId());
+            internal.put("customerId", pair.getCustomer().getId());
 
             // Put this in the Vehicle List
             vehicleJSONarray.put(internal);
-            i++;
         }
-        // Wrap that in a new JSON Object, as Strign
+        // Wrap that in a new JSON Object, as String
         String h = new JSONObject().put("vehicles", vehicleJSONarray).toString();
         System.out.println(h);
         return h;
     }
 
     /**
-     * Updates all Changes in customers and vehicles via HTTP to the Server
-     * uses toJSON() to prepare all the Data for it.
+     * Updates all Changes of the Given Pairs to the Server via HTTP
+     *      * uses toJSON() to prepare all the Data for it.
+     *      * only used at the beginning
+     *
+     * @param pairs list of Pairs that should be forwarded to the Server
      */
-    public void updateScenario() {
+    public void updateScenario(ArrayList<Pair> pairs) {
         HttpClient client = HttpClient.newHttpClient();
 
         // Build PUT Request
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8090/Scenarios/update_scenario/" + id))
                 .header("Content-Type", "application/json")
-                .PUT(HttpRequest.BodyPublishers.ofString(toJSON()))
+                .PUT(HttpRequest.BodyPublishers.ofString(toJSON(pairs)))
                 .build();
 
         // Send
@@ -190,6 +173,62 @@ public class Scenario {
             System.out.println("Response Body: " + response.body());
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Calls the Scenario API to fetch the current Data according to this ID
+     * Calls updateInternals to Save the changes to this Data
+     */
+    public void updateState() {
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:8080/scenarios/" + id)) // Localhost endpoint
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            // Check if the response was successful
+            if (response.statusCode() == 200) {
+
+                // Save the changes to internal
+                updateInternals(response.body());
+
+            } else {
+                System.out.println("Request failed with status code: " + response.statusCode());
+            }
+        } catch (URISyntaxException e) {
+            System.err.println("Invalid URI syntax: " + e.getMessage());
+        } catch (IOException | InterruptedException e) {
+            System.err.println("An error occurred: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Updates the current Scenario Internals via the given JSON String
+     * Helper-Function for updateState()
+     * @param json from the API
+     */
+    private void updateInternals(String json){
+        // make a viable Object from
+        JSONObject object = new JSONObject(json);
+
+        status = object.getString("status");
+
+        // Create Customer List
+        customers = new ArrayList<>();
+        JSONArray customerJSON = object.getJSONArray("customers");
+        for (int i = 0; i < object.getJSONArray("customers").length(); i++) {
+            customers.add(new Customer(customerJSON.getJSONObject(i).toString()));
+        }
+
+        // Create Vehicle List
+        vehicles = new ArrayList<>();
+        JSONArray vehicleJSON = object.getJSONArray("vehicles");
+        for (int b = 0; b < object.getJSONArray("vehicles").length(); b++) {
+            vehicles.add(new Vehicle(vehicleJSON.getJSONObject(b).toString()));
         }
     }
 }
