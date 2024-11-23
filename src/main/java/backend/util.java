@@ -1,6 +1,6 @@
 package backend;
 
-public class distanceUtil {
+public class util {
     /**
      * Computes the direct distance (in m) between four Points on the earth
      * Real World-Coordinates
@@ -42,5 +42,22 @@ public class distanceUtil {
      */
     static double convertMPStoKPH(double kph) {
         return (kph * 1000) / 3600;
+    }
+
+    /**
+     *
+     * @param vehicle
+     * @return
+     */
+    static String toJSON(Vehicle vehicle) {
+        return "";
+    }
+
+    static String toJSON(String car) {
+        return "";
+    }
+
+    static String toJSON(Scenario scenario) {
+        return "";
     }
 }
