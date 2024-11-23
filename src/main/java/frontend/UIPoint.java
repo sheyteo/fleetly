@@ -36,11 +36,13 @@ public class UIPoint {
      * @return Point in printable UI-Format
      */
     public static UIPoint convertToUiPoint(float x, float y, final float dimension){
-        final float y_API_Max = 11.65f;
-        final float x_API_Max = 48.17f;
-        float y_ration = y_API_Max / dimension;
-        float x_ration = x_API_Max / dimension;
-        return new UIPoint(x*x_ration, y*y_ration);
+        final float y_API_Max = 11.646708f;
+        final float y_API_Min = 11.503302f;
+        final float x_API_Max = 48.165312f;
+        final float x_API_Min = 48.113f;
+        final float xDistance = x_API_Max - x_API_Min;
+        final float yDistance = y_API_Max - y_API_Min;
+        return new UIPoint((1-(x_API_Max-x)/xDistance)*dimension, (1-(y_API_Max-y)/yDistance)*dimension);
     }
 
     public Color getColor() {
