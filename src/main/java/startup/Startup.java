@@ -21,7 +21,7 @@ public class Startup {
     final private Scenario scenario;
     final public static int numberOfVehicles = 5;
     final public static int numberOfCustomers = 10;
-    final public static float scenario_speed = 0.001f;
+    final public static float scenario_speed = 0.01f;
 
     /**
      * Constructor. Creates a new Scenario

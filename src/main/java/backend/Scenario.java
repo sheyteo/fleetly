@@ -15,12 +15,11 @@ public class Scenario {
     // Variables initialized at start
     private ArrayList<Customer> customers;
     private ArrayList<Vehicle> vehicles;
+    private HashSet<String> customerIDset;
     private String status;
     private final String id;
     boolean finished;
-
-    // Hash-Set
-    private HashSet<String> customerIDset;
+    int updateCounter;
 
     /**
      * Constructor of Scenario
@@ -35,6 +34,7 @@ public class Scenario {
             customerIDset.add(customer.getId());
         }
         finished = false;
+        updateCounter = 0;
     }
 
     /**
@@ -86,17 +86,19 @@ public class Scenario {
                 internal.put("id", pair.getVehicle().getId());
                 internal.put("customerId", pair.getCustomer().getId());
 
+                // Put this in the Vehicle List
+                vehicleJSONarray.put(internal);
+
                 customerIDset.remove(pair.getCustomer().getId());
                 // Debug
                 System.out.println("Vehicle ["+pair.getVehicle().getId()+"] connected to Customer" + pair.getCustomer().getId());
             }
-
-            // Put this in the Vehicle List
-            vehicleJSONarray.put(internal);
         }
         // Wrap that in a new JSON Object, as String
+        if(vehicleJSONarray.isEmpty()) {
+            return "";
+        }
         String h = new JSONObject().put("vehicles", vehicleJSONarray).toString();
-        System.out.println(h);
         return h;
     }
 
@@ -108,30 +110,43 @@ public class Scenario {
      * @param pairs list of Pairs that should be forwarded to the Server
      */
     public void updateScenario(ArrayList<Pair> pairs) {
+
+        if(customerIDset.isEmpty() && updateCounter != 0) {
+            // To Check in the logic-loop for finish call
+            finished = true;
+            return;
+        }
+
         // Send the List to the API
         HttpClient client = HttpClient.newHttpClient();
+
+        String testNull = toJSON(pairs);
+        if(testNull.isEmpty()) {
+            // We Ski the Update to the API
+            return;
+        }
 
         // Build PUT Request
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8090/Scenarios/update_scenario/" + id))
                 .header("Content-Type", "application/json")
-                .PUT(HttpRequest.BodyPublishers.ofString(toJSON(pairs)))
+                .PUT(HttpRequest.BodyPublishers.ofString(testNull))
                 .build();
 
         // Send
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             // Handle Response
-            System.out.println("Status Code: " + response.statusCode());
 
             JSONObject jsonObject = new JSONObject(response.body());
             if(jsonObject.has("failedToUpdate")) {
                 System.out.println("Failed to update Reason: " + jsonObject.getJSONArray("failedToUpdate").toString());
             }
-            System.out.println("Response Body: " + response.body());
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        updateCounter++;
     }
 
     /**
