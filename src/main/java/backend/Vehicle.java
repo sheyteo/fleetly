@@ -2,6 +2,9 @@ package backend;
 
 import org.json.JSONObject;
 
+import java.time.LocalTime;
+import java.time.Duration;
+
 public class Vehicle {
     private double coordX;
     private double coordY;
@@ -11,6 +14,7 @@ public class Vehicle {
 
     private int tripCounter;
     private double remainingTravelTime;
+    private LocalTime arrivesAtTime;
     private float speed;
     private int activeTime;
     private float distanceTravelled;
@@ -33,8 +37,11 @@ public class Vehicle {
         remainingTravelTime = object.optDouble("remainingTravelTime", 0.0d);
         speed = object.optFloat("vehicleSpeed", 0.0f);
         activeTime = object.optInt("activeTime", 0);
-        customerID = object.optString("customerID",""); // Empty if there is none
+        customerID = object.optString("customerId",""); // Empty if there is none
 
+
+        arrivesAtTime = LocalTime.now().plusNanos((long)
+                (remainingTravelTime * 1_000_000_000));
     }
 
     // Getter for the Variables
@@ -52,6 +59,16 @@ public class Vehicle {
 
     public double getRemainingTravelTime() {
         return remainingTravelTime;
+    }
+
+    public double arrivesIn()
+    {
+        Duration duration = Duration.between(LocalTime.now(), arrivesAtTime);
+
+        // Get the difference in seconds
+        long seconds = duration.getSeconds();
+
+        return seconds;
     }
 
     public float getSpeed() {

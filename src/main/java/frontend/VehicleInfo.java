@@ -86,10 +86,12 @@ public class VehicleInfo {
         if(end == null)
             return start;
 
+        double totalTime = totalWayTime();
+        double timeLeft = vehicle.arrivesIn();
         UIPoint vector = new UIPoint(end.getX() - start.getX(), end.getY() - start.getY());
-        double scaling = 1- (vehicle.getRemainingTravelTime() / totalWayTime());
+        double scaling = 1- (timeLeft / totalTime);
         Color col = frontend.util.uuidToColor(vehicle.getId(), 0);
-        return new UIPoint(vector.getX() * scaling, vector.getY() * scaling, col);
+        return new UIPoint( start.getX() + vector.getX() * scaling, start.getY() +vector.getY() * scaling, col);
     }
 
     public Vehicle getVehicle() {

@@ -98,7 +98,7 @@ public class HelloApplication extends Application {
         Task<Void> logicTask = new Task<>() {
             @Override
             protected Void call() throws Exception {
-                scenario = new Scenario("f805e640-f9ad-4c5a-9dc3-55dbb8a735da");
+                scenario = new Scenario("fc036b89-aa41-4850-8083-c93afe79802a");
                 while (true) {
                     var algo = new Algorithm(scenario.getCustomers(),
                             scenario.getVehicles(),scenario.getCustomerIDset());
@@ -122,7 +122,7 @@ public class HelloApplication extends Application {
                             + ":" + adjustedTime.getMinute() + ":" + adjustedTime.getSecond());
 
 
-                    delay = Math.max(0.5,(delay * 1000*0.1));
+                    delay = Math.max(0.5,(delay * 1000*0.01));
 
                     // Add a small sleep to prevent CPU overload
                     Thread.sleep((int) delay);
@@ -183,17 +183,31 @@ public class HelloApplication extends Application {
         // Redraw the grid
         drawGrid();
 
+        gc.setStroke(Color.BLUE);
         // Draw all the points in the list
         for (UIPoint point : customerPoints) {
             drawPoint(point);
+            //drawLine(point.().getX(), point.getUpdatedLocation().getY(),
+            //        point.nextPoint().getX(), point.nextPoint().getY());
         }
 
+        gc.setStroke(Color.GREEN);
         for (VehicleInfo point : vehiclePoints) {
             drawVehicle(point.getUpdatedLocation(),10, 20,0);
+            drawLine(point.getUpdatedLocation().getX(), point.getUpdatedLocation().getY(),
+                    point.nextPoint().getX(), point.nextPoint().getY());
         }
     }
 
+    private void drawLine(double x1, double y1, double x2, double y2) {
+         // Set the color of the line (can be changed)
+        gc.setLineWidth(2); // Set the width of the line (can be changed)
+        gc.strokeLine(x1, y1, x2, y2); // Draw the line from (x1, y1) to (x2, y2)
+    }
+
+
     private void drawGrid() {
+        gc.setStroke(Color.BLACK);
         double gridSpacing = 50; // Grid spacing in pixels
         for (double x = 0; x < canvas.getWidth(); x += gridSpacing) {
             gc.strokeLine(x, 0, x, canvas.getHeight());
