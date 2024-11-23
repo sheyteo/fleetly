@@ -1,6 +1,7 @@
 package frontend;
 
 import backend.Algorithm;
+import backend.Customer;
 import backend.Scenario;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -23,7 +24,7 @@ import java.util.List;
 
 public class HelloApplication extends Application {
 
-    private List<UIPoint> customerPoints = new ArrayList<>(); // The list of points to move
+    private List<Customer> customerPoints = new ArrayList<>(); // The list of points to move
     private List<VehicleInfo> vehiclePoints = new ArrayList<>(); // The list of points to move
     private GraphicsContext gc;
     private Canvas canvas;
@@ -98,7 +99,7 @@ public class HelloApplication extends Application {
         Task<Void> logicTask = new Task<>() {
             @Override
             protected Void call() throws Exception {
-                scenario = new Scenario("fc036b89-aa41-4850-8083-c93afe79802a");
+                scenario = new Scenario("641058b3-1d2f-4e53-8da0-c83b74e07736");
                 while (true) {
                     var algo = new Algorithm(scenario.getCustomers(),
                             scenario.getVehicles(),scenario.getCustomerIDset());
@@ -109,7 +110,7 @@ public class HelloApplication extends Application {
                     scenario.updateState();
 
                     // Update points
-                    customerPoints = util.customersToPoints(scenario.getCustomers(), dimension);
+                    customerPoints = scenario.getCustomers();
                     vehiclePoints = VehicleInfo.generateInfo(scenario, dimension);
 
                     // Calculate delay (if needed)
@@ -122,7 +123,7 @@ public class HelloApplication extends Application {
                             + ":" + adjustedTime.getMinute() + ":" + adjustedTime.getSecond());
 
 
-                    delay = Math.max(0.5,(delay * 1000*0.01));
+                    delay = Math.max(500,(delay * 1000));
 
                     // Add a small sleep to prevent CPU overload
                     Thread.sleep((int) delay);
@@ -185,10 +186,12 @@ public class HelloApplication extends Application {
 
         gc.setStroke(Color.BLUE);
         // Draw all the points in the list
-        for (UIPoint point : customerPoints) {
-            drawPoint(point);
-            //drawLine(point.().getX(), point.getUpdatedLocation().getY(),
-            //        point.nextPoint().getX(), point.nextPoint().getY());
+        for (Customer customer : customerPoints) {
+            var end = util.customersToPointEnd(customer,dimension);
+            var start = util.customersToPointStart(customer,dimension);
+
+            drawPoint(start);
+            drawLine(start.getX(),start.getY(),end.getX(),end.getY());
         }
 
         gc.setStroke(Color.GREEN);

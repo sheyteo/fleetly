@@ -71,4 +71,26 @@ public class util {
         }
         return points;
     }
+
+    public static UIPoint customersToPointStart(Customer customer, float dimension)
+    {
+        UIPoint p = UIPoint.convertToUiPoint((float)customer.getCoordX(),
+                (float)customer.getCoordY(),dimension);
+        if(customer.isAwaitingService())
+        {
+            p.setColor(uuidToColor(customer.getId(),1));
+        }
+        return p;
+    }
+
+    public static UIPoint customersToPointEnd(Customer customer, float dimension)
+    {
+        UIPoint p = UIPoint.convertToUiPoint((float)customer.getDestX(),
+                (float)customer.getDestY(),dimension);
+        if(customer.isAwaitingService())
+        {
+            p.setColor(uuidToColor(customer.getId(),1));
+        }
+        return p;
+    }
 }
