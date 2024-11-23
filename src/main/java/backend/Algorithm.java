@@ -18,7 +18,11 @@ private ArrayList<Vehicle> vehicles; //ALL vehicles (also those currently busy)
 
     int costFunction(Vehicle vehicle, Customer customer) {
         int cost = 0;
-        if(vehicle.)
+        if(vehicle.getCustomer() != null){ //not free, still driving previous customer
+            cost += (int) vehicle.getRemainingTravelTime();
+        }
+        cost +=
+
         return cost;
     }
 
