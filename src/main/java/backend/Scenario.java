@@ -173,7 +173,7 @@ public class Scenario {
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("http://localhost:8080/scenarios/" + id)) // Localhost endpoint
+                    .uri(new URI("http://localhost:8090/Scenarios/get_scenario/" + id)) // Localhost endpoint
                     .GET()
                     .build();
 

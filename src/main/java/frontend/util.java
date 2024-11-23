@@ -18,7 +18,7 @@ public class util {
         // Convert part of the UUID string to an integer to control the green component
         int hash = uuidString.hashCode(); // Get a hash of the UUID string
         // Normalize the hash value to a value between 0 and 1
-        float normalizedGreen = (hash % 256) / 255.0f; // Use the modulus of the hash for green
+        float normalizedGreen = (Math.abs(hash) % 256) / 255.0f; // Use the modulus of the hash for green
 
         Color color;
 
@@ -49,7 +49,7 @@ public class util {
 
         for (Vehicle vehicle : vehicles) {
             UIPoint p = UIPoint.convertToUiPoint((float)vehicle.getCoordX(), (float)vehicle.getCoordY(),dimension);
-            p.setColor(uuidToColor(vehicle.toString(),0));
+            p.setColor(uuidToColor(vehicle.getId(),0));
             points.add(p);
         }
 
@@ -65,7 +65,7 @@ public class util {
                     (float)customer.getCoordY(),dimension);
             if(customer.isAwaitingService())
             {
-                p.setColor(uuidToColor(customer.toString(),1));
+                p.setColor(uuidToColor(customer.getId(),1));
             }
             points.add(p);
         }

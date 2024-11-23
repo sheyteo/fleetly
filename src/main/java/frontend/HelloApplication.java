@@ -15,6 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.concurrent.Task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,31 +93,39 @@ public class HelloApplication extends Application {
         timeline.play();
     }
 
-    private void startLogicLoop() throws InterruptedException {
-        scenario = new Scenario("fe828c1c-bac8-4441-abed-d3a7e3d34e35");
-        while (true)
-        {
-            var algo = new Algorithm(scenario.getCustomers(),scenario.getVehicles(),
-                    scenario.getCustomerIDset());
+    private void startLogicLoop() {
+        Task<Void> logicTask = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                scenario = new Scenario("fe828c1c-bac8-4441-abed-d3a7e3d34e35");
+                while (true) {
+                    var algo = new Algorithm(scenario.getCustomers(),
+                            scenario.getVehicles(),scenario.getCustomerIDset());
 
-            var list = algo.getSolution();
+                    scenario.updateScenario(algo.getSolution());
 
-            scenario.updateScenario(list);
+                    // Perform computations
+                    scenario.updateState();
 
-            Thread.sleep(100);
+                    // Update points
+                    customerPoints = util.customersToPoints(scenario.getCustomers(), dimension);
+                    vehiclePoints = util.vehiclesToPoints(scenario.getVehicles(), dimension);
 
-            scenario.updateState();
+                    // Calculate delay (if needed)
+                    double delay = scenario.timeToArrival();
 
-            customerPoints = util.customersToPoints(scenario.getCustomers(),0);
-            vehiclePoints = util.vehiclesToPoints(scenario.getVehicles(),0);
+                    // Add a small sleep to prevent CPU overload
+                    Thread.sleep((int) (delay * 1000));
+                }
+            }
+        };
 
-            System.out.println("abdfhajkfsd");
-
-            double delay = scenario.timeToArrival();
-            Thread.sleep((int)(delay*1000));
-        }
-
+        // Run the task on a background thread
+        Thread logicThread = new Thread(logicTask);
+        logicThread.setDaemon(true); // Ensures the thread stops when the application exits
+        logicThread.start();
     }
+
 
 
     private void drawAll() {
