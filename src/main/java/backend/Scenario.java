@@ -9,9 +9,7 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Timer;
+import java.util.*;
 
 public class Scenario {
     // Variables initialized at start
@@ -19,6 +17,9 @@ public class Scenario {
     private ArrayList<Vehicle> vehicles;
     private String status;
     private final String id;
+
+    // Hash-Set
+    private HashSet<String> customerIDset;
 
     // Variables initialized on the Go
     // LocalTime endTime;
@@ -29,8 +30,13 @@ public class Scenario {
      * @param scenarioID The ID of the Scenario on the Server, that shuould be mirrored
      */
     public Scenario(String scenarioID) {
-        id = scenarioID;
-        updateState();
+        id = scenarioID; // Init ID
+        updateState(); // Init Everything
+        customerIDset = new HashSet<>(); // Create Hashset
+        // Fill Hashset
+        for(Customer customer : customers) {
+            customerIDset.add(customer.getId());
+        }
     }
 
     /**
@@ -64,14 +70,6 @@ public class Scenario {
         }
     }
 
-    public ArrayList<Customer> getCustomers() {
-        return customers;
-    }
-
-    public ArrayList<Vehicle> getVehicles() {
-        return vehicles;
-    }
-
     /**
      * Initialize this scenario via. HTTP Post
      */
@@ -103,7 +101,8 @@ public class Scenario {
 
     /**
      * Helper Function for updateScenario()
-     * warps all VehicleIDs and CustomerIDs in a JSON for the Server
+     * warps all VehicleIDs and CustomerIDs in a JSON for the Server where the Car doesn't have a customerID linked yet
+     * removes this pairs from the HashSet
      * @param pairs that should be turned into a valid JSON
      * @return The JSON String for the HTTP Put Request
      */
@@ -113,8 +112,15 @@ public class Scenario {
             // Prepare Internals for current Vehicle
             JSONObject internal = new JSONObject();
 
-            internal.put("id", pair.getVehicle().getId());
-            internal.put("customerId", pair.getCustomer().getId());
+            // Send only Vehicles that currently don't have any passengers
+            if(pair.getVehicle().getCustomerID().isEmpty()) {
+                internal.put("id", pair.getVehicle().getId());
+                internal.put("customerId", pair.getCustomer().getId());
+
+                customerIDset.remove(pair.getCustomer().getId());
+                // Debug
+                System.out.println("Vehicle ["+pair.getVehicle().getId()+"] connected to Customer" + pair.getCustomer().getId());
+            }
 
             // Put this in the Vehicle List
             vehicleJSONarray.put(internal);
@@ -127,12 +133,13 @@ public class Scenario {
 
     /**
      * Updates all Changes of the Given Pairs to the Server via HTTP
-     *      * uses toJSON() to prepare all the Data for it.
-     *      * only used at the beginning
+     * uses toJSON() to prepare all the Data for it.
+     * used in the Constructor and at every tick
      *
      * @param pairs list of Pairs that should be forwarded to the Server
      */
     public void updateScenario(ArrayList<Pair> pairs) {
+        // Send the List to the API
         HttpClient client = HttpClient.newHttpClient();
 
         // Build PUT Request
@@ -147,6 +154,11 @@ public class Scenario {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             // Handle Response
             System.out.println("Status Code: " + response.statusCode());
+
+            JSONObject jsonObject = new JSONObject(response.body());
+            if(jsonObject.has("failedToUpdate")) {
+                System.out.println("Failed to update Reason: " + jsonObject.getString("failedToUpdate"));
+            }
             System.out.println("Response Body: " + response.body());
         } catch (Exception e) {
             e.printStackTrace();
@@ -225,5 +237,19 @@ public class Scenario {
 
         // Create a stream, find min, return it
         return Arrays.stream(helper).min().getAsDouble();
+    }
+
+
+    // Getter for the Members
+    public ArrayList<Customer> getCustomers() {
+        return customers;
+    }
+
+    public ArrayList<Vehicle> getVehicles() {
+        return vehicles;
+    }
+
+    public HashSet<String> getCustomerIDset() {
+        return customerIDset;
     }
 }
