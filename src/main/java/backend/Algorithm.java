@@ -25,15 +25,14 @@ private ArrayList<Vehicle> vehicles; //ALL vehicles (also those currently busy)
 
     int costFunction(Vehicle vehicle, Customer customer) {
         int cost = 0;
-        if(vehicle.getCustomer() != null){ //not free, still driving previous customer
+        if(!vehicle.getCustomerID().isEmpty()){ //not free, still driving previous customer
             //should be seconds
             cost += (int) vehicle.getRemainingTravelTime();
         }
         //everything is in m/s, m, s:
         cost += (int) (util.calculateDistance(vehicle.getCoordX(), vehicle.getCoordY(), customer.getCoordX(), customer.getCoordY())/vehicle.getSpeed());
 
-        //the longer the customer is waiting, the lower the cost function
-
+        if(cost < 0){cost = 0;}
         return cost;
     }
 
