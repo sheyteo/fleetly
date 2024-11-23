@@ -33,6 +33,7 @@ public class Startup {
         initializeScenario(id);
         // Build the Scenario as an Object
         scenario = new Scenario(id);
+        System.out.println("\nScenario ID: " + scenario.getId() + "\n");
         // Call API to Launch Scenario
         httpHelperLaunch(id);
     }

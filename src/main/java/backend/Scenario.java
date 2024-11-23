@@ -98,8 +98,7 @@ public class Scenario {
         if(vehicleJSONarray.isEmpty()) {
             return "";
         }
-        String h = new JSONObject().put("vehicles", vehicleJSONarray).toString();
-        return h;
+        return new JSONObject().put("vehicles", vehicleJSONarray).toString();
     }
 
     /**
