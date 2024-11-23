@@ -17,6 +17,7 @@ public class Scenario {
     private ArrayList<Vehicle> vehicles;
     private String status;
     private final String id;
+    boolean finished;
 
     // Hash-Set
     private HashSet<String> customerIDset;
@@ -33,6 +34,7 @@ public class Scenario {
         for(Customer customer : customers) {
             customerIDset.add(customer.getId());
         }
+        finished = false;
     }
 
     /**
@@ -166,6 +168,12 @@ public class Scenario {
      * Calls updateInternals to Save the changes to this Data
      */
     public void updateState() {
+        // Catch if everything is done!
+        if(customerIDset.isEmpty()) {
+            System.out.println("SUCESS! Finished!");
+            finished = true;
+            return;
+        }
         try {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()

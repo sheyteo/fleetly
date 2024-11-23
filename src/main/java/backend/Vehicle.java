@@ -35,7 +35,7 @@ public class Vehicle {
         distanceTravelled = object.optFloat("distanceTravelled", 0.0f);
         tripCounter = object.optInt("numberOfTrips", 0);
         remainingTravelTime = object.optDouble("remainingTravelTime", 0.0d);
-        speed = object.optFloat("vehicleSpeed", 0.0f);
+        speed = util.convertKPHtoMPS(object.optFloat("vehicleSpeed", 0.0f));
         activeTime = object.optInt("activeTime", 0);
         customerID = object.optString("customerId",""); // Empty if there is none
 

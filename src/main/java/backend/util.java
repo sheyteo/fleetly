@@ -40,7 +40,7 @@ public class util {
      * @param kph speed in km/h
      * @return speed in m/s
      */
-    static double convertMPStoKPH(double kph) {
-        return (kph * 1000) / 3600;
+    static float convertKPHtoMPS(float kph) {
+        return kph/3.6f;
     }
 }
