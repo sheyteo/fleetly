@@ -64,6 +64,14 @@ public class Scenario {
         }
     }
 
+    public ArrayList<Customer> getCustomers() {
+        return customers;
+    }
+
+    public ArrayList<Vehicle> getVehicles() {
+        return vehicles;
+    }
+
     /**
      * Initialize this scenario via. HTTP Post
      */

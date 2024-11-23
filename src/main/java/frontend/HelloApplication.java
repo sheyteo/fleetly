@@ -1,5 +1,7 @@
 package frontend;
 
+import backend.Algorithm;
+import backend.Scenario;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -22,6 +24,7 @@ public class HelloApplication extends Application {
     private List<UIPoint> points = new ArrayList<>(); // The list of points to move
     private GraphicsContext gc;
     private Canvas canvas;
+    Scenario scenario;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -66,6 +69,8 @@ public class HelloApplication extends Application {
 
         // Start the drawing loop with dynamic delay
         startDrawingLoop();
+
+        startLogicLoop();
     }
 
     private void startDrawingLoop() {
@@ -75,10 +80,9 @@ public class HelloApplication extends Application {
                     // Draw the points and perform actions immediately
                     drawAll();
 
+
                     // Perform any additional actions (e.g., update points or state)
                     updatePoints();
-
-                    System.out.println("abdfhajkfsd");
                 })
         );
 
@@ -88,6 +92,18 @@ public class HelloApplication extends Application {
         // Start the timeline
         timeline.play();
     }
+
+    private void startLogicLoop() {
+        scenario = new Scenario("");
+        while (true)
+        {
+            System.out.println("abdfhajkfsd");
+
+
+        }
+
+    }
+
 
     private void drawAll() {
         draw(); // Draw taxis and customers (and possibly other elements)
