@@ -83,6 +83,9 @@ public class VehicleInfo {
     public UIPoint getUpdatedLocation() {
         UIPoint start = previousPoint();
         UIPoint end = nextPoint();
+        if(end == null)
+            return start;
+
         UIPoint vector = new UIPoint(end.getX() - start.getX(), end.getY() - start.getY());
         double scaling = 1- (vehicle.getRemainingTravelTime() / totalWayTime());
         Color col = frontend.util.uuidToColor(vehicle.getId(), 0);
@@ -104,7 +107,7 @@ public class VehicleInfo {
                 info.add(new VehicleInfo(vehicle, null, 0, dimension));
             }
             for(Customer customer : scenario.getCustomers()) {
-                if(customer.getId() == vehicle.getCustomerID()) {
+                if(customer.getId().equals(vehicle.getCustomerID())) {
                     info.add(new VehicleInfo(vehicle, customer, 0, dimension));
                     break;
                 }

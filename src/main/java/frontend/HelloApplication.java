@@ -17,13 +17,14 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.concurrent.Task;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class HelloApplication extends Application {
 
     private List<UIPoint> customerPoints = new ArrayList<>(); // The list of points to move
-    private List<UIPoint> vehiclePoints = new ArrayList<>(); // The list of points to move
+    private List<VehicleInfo> vehiclePoints = new ArrayList<>(); // The list of points to move
     private GraphicsContext gc;
     private Canvas canvas;
     Scenario scenario;
@@ -97,7 +98,7 @@ public class HelloApplication extends Application {
         Task<Void> logicTask = new Task<>() {
             @Override
             protected Void call() throws Exception {
-                scenario = new Scenario("fe828c1c-bac8-4441-abed-d3a7e3d34e35");
+                scenario = new Scenario("f805e640-f9ad-4c5a-9dc3-55dbb8a735da");
                 while (true) {
                     var algo = new Algorithm(scenario.getCustomers(),
                             scenario.getVehicles(),scenario.getCustomerIDset());
@@ -109,13 +110,22 @@ public class HelloApplication extends Application {
 
                     // Update points
                     customerPoints = util.customersToPoints(scenario.getCustomers(), dimension);
-                    vehiclePoints = util.vehiclesToPoints(scenario.getVehicles(), dimension);
+                    vehiclePoints = VehicleInfo.generateInfo(scenario, dimension);
 
                     // Calculate delay (if needed)
                     double delay = scenario.timeToArrival();
 
+                    LocalTime adjustedTime = LocalTime.now().plusNanos((long)
+                            (delay * 1_000_000_000));
+
+                    System.out.println("Adjusted time: " + adjustedTime.getHour()
+                            + ":" + adjustedTime.getMinute() + ":" + adjustedTime.getSecond());
+
+
+                    delay = Math.max(0.5,(delay * 1000*0.1));
+
                     // Add a small sleep to prevent CPU overload
-                    Thread.sleep((int) (delay * 1000));
+                    Thread.sleep((int) delay);
                 }
             }
         };
@@ -132,6 +142,40 @@ public class HelloApplication extends Application {
         draw(); // Draw taxis and customers (and possibly other elements)
     }
 
+    private void drawVehicle(UIPoint point, double width, double height, double orientation) {
+        gc.save(); // Save the current state of the GraphicsContext
+
+        // Translate to the vehicle's position (x, y)
+        gc.translate(point.getX(), point.getY());
+
+        // Rotate the canvas by the orientation angle
+        gc.rotate(orientation);
+
+        // Set the color for the triangle
+        gc.setFill(point.getColor());
+
+        // Define the triangle's vertices
+        double[] xPoints = {
+                0,                     // Tip of the triangle (forward direction)
+                -width / 2,            // Bottom left corner
+                width / 2              // Bottom right corner
+        };
+        double[] yPoints = {
+                -height / 2,           // Tip of the triangle (forward direction)
+                height / 2,            // Bottom left corner
+                height / 2             // Bottom right corner
+        };
+
+        // Draw the triangle
+        gc.fillPolygon(xPoints, yPoints, 3); // 3 points for a triangle
+
+        // Restore the original GraphicsContext state
+        gc.restore();
+    }
+
+
+
+
     private void draw() {
         // Clear the canvas before each new drawing
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -144,8 +188,8 @@ public class HelloApplication extends Application {
             drawPoint(point);
         }
 
-        for (UIPoint point : vehiclePoints) {
-            drawPoint(point);
+        for (VehicleInfo point : vehiclePoints) {
+            drawVehicle(point.getUpdatedLocation(),10, 20,0);
         }
     }
 

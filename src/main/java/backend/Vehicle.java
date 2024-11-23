@@ -33,7 +33,7 @@ public class Vehicle {
         remainingTravelTime = object.optDouble("remainingTravelTime", 0.0d);
         speed = object.optFloat("vehicleSpeed", 0.0f);
         activeTime = object.optInt("activeTime", 0);
-        customerID = object.has("customerID") ? object.optString("customerID") : ""; // Empty if there is none
+        customerID = object.optString("customerID",""); // Empty if there is none
 
     }
 
