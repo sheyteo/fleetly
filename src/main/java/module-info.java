@@ -6,6 +6,6 @@ module com.example.fleetlyui {
     requires java.net.http;
     requires org.json;
 
-    opens com.example.fleetlyui to javafx.fxml;
-    exports com.example.fleetlyui;
+    opens frontend to javafx.fxml;
+    exports frontend;
 }

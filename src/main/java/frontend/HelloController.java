@@ -1,4 +1,4 @@
-package com.example.fleetlyui;
+package frontend;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
