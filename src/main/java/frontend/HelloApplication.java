@@ -40,7 +40,7 @@ public class HelloApplication extends Application {
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
         double screenWidth = screenBounds.getWidth();
         double screenHeight = screenBounds.getHeight();
-        dimension = (float)screenHeight;
+        dimension = ((float)screenHeight)/(1.2f);
 
         // Load the scene
         Scene scene = new Scene(fxmlLoader.load(), screenWidth, screenHeight);

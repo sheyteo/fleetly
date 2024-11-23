@@ -30,19 +30,40 @@ public class UIPoint {
     /**
      * convert from API-Coordinates to Printable GUI Coordinates
      *
-     * @param x x-Coordinate in API-Format
-     * @param y y-Coordinate in API-Format
+     * @param lat x-Coordinate in API-Format
+     * @param lon y-Coordinate in API-Format
      * @param dimension dimension of the quadratic UI
      * @return Point in printable UI-Format
      */
-    public static UIPoint convertToUiPoint(float x, float y, final float dimension){
-        final float y_API_Max = 11.646708f;
-        final float y_API_Min = 11.503302f;
-        final float x_API_Max = 48.165312f;
-        final float x_API_Min = 48.113f;
-        final float xDistance = x_API_Max - x_API_Min;
-        final float yDistance = y_API_Max - y_API_Min;
-        return new UIPoint((1-(x_API_Max-x)/xDistance)*dimension, (1-(y_API_Max-y)/yDistance)*dimension);
+    public static UIPoint convertToUiPoint(double lat, double lon, final float dimension){
+        final double long_API_Max = Math.toRadians(11.646708f);
+        final double long_API_Min = Math.toRadians(11.503302f);
+        final double lat_API_Max = Math.toRadians(48.165312f);
+        final double lat_API_Min = Math.toRadians(48.113f);
+        lat = Math.toRadians(lat);
+        lon = Math.toRadians(lon);
+        final double R = 6371.01;
+        double x = R * Math.cos(lat) * Math.cos(lon);
+        double y = R * Math.cos(lat) * Math.sin(lon);
+
+        double x_API_Max = R * Math.cos(lat_API_Max) * Math.cos(long_API_Max);
+        double y_API_Max = R * Math.cos(lat_API_Max) * Math.sin(long_API_Max);
+
+        double x_API_Min = R * Math.cos(lat_API_Min) * Math.cos(long_API_Min);
+        double y_API_Min = R * Math.cos(lat_API_Min) * Math.sin(long_API_Min);
+
+
+        var prcx = x - x_API_Min;
+        var prcy = y - y_API_Min;
+
+        var x_rat = x_API_Max - x_API_Min;
+        var y_rat = y_API_Max - y_API_Min;
+
+        var unscaledX = prcx/x_rat;
+        var unscaledY = prcy/y_rat;
+
+
+        return new UIPoint(unscaledX*dimension+50,unscaledY*dimension+50);
     }
 
     public Color getColor() {

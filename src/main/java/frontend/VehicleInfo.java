@@ -63,7 +63,7 @@ public class VehicleInfo {
         }
         if(vehicle.getCoordX() == customer.getCoordX() && vehicle.getCoordY() == customer.getCoordY()) {
             // We are driving with the customer to the destination
-            return UIPoint.convertToUiPoint((float)customer.getDestY(), (float)customer.getDestY(), dimension);
+            return UIPoint.convertToUiPoint((float)customer.getDestX(), (float)customer.getDestY(), dimension);
         }
         // We're driving to the Customer
         return UIPoint.convertToUiPoint((float)customer.getCoordX(), (float)customer.getCoordY(), dimension);
