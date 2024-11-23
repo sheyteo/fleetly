@@ -19,9 +19,9 @@ public class Startup {
     // MEBERS
 
     final private Scenario scenario;
-    final public static int numberOfVehicles = 5;
-    final public static int numberOfCustomers = 10;
-    final public static float scenario_speed = 0.01f;
+    final public static int numberOfVehicles = 1;
+    final public static int numberOfCustomers = 1;
+    final public static float scenario_speed = 0.1f;
 
     /**
      * Constructor. Creates a new Scenario

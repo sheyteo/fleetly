@@ -45,6 +45,7 @@ public class UIPoint {
         final double R = 6371.01;
         double x = R * Math.cos(lat) * Math.cos(lon);
         double y = R * Math.cos(lat) * Math.sin(lon);
+        double z = R * Math.sin(lat);
 
         double x_API_Max = R * Math.cos(lat_API_Max) * Math.cos(long_API_Max);
         double y_API_Max = R * Math.cos(lat_API_Max) * Math.sin(long_API_Max);
