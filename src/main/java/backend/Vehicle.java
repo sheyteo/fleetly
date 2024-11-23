@@ -34,6 +34,7 @@ public class Vehicle {
         speed = object.optFloat("vehicleSpeed", 0.0f);
         activeTime = object.optInt("activeTime", 0);
         customerID = object.has("customerID") ? object.optString("customerID") : ""; // Empty if there is none
+
     }
 
     // Getter for the Variables

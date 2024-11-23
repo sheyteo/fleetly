@@ -21,10 +21,6 @@ public class Scenario {
     // Hash-Set
     private HashSet<String> customerIDset;
 
-    // Variables initialized on the Go
-    // LocalTime endTime;
-    //LocalTime startTime;
-
     /**
      * Constructor of Scenario
      * @param scenarioID The ID of the Scenario on the Server, that shuould be mirrored
@@ -157,7 +153,7 @@ public class Scenario {
 
             JSONObject jsonObject = new JSONObject(response.body());
             if(jsonObject.has("failedToUpdate")) {
-                System.out.println("Failed to update Reason: " + jsonObject.getString("failedToUpdate"));
+                System.out.println("Failed to update Reason: " + jsonObject.getJSONArray("failedToUpdate").toString());
             }
             System.out.println("Response Body: " + response.body());
         } catch (Exception e) {
