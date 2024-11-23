@@ -3,17 +3,17 @@ package backend;
 import org.json.JSONObject;
 
 public class Vehicle {
-    double coordX;
-    double coordY;
-    Customer customer;
-    final String id;
-    boolean isAvailable;
+    private double coordX;
+    private double coordY;
+    private Customer customer;
+    private final String id;
+    private boolean isAvailable;
 
-    int tripCounter;
-    double remainingTravelTime;
-    float speed;
-    int activeTime;
-    float distanceTravelled;
+    private int tripCounter;
+    private double remainingTravelTime;
+    private float speed;
+    private int activeTime;
+    private float distanceTravelled;
 
     /**
      * Construct a Vehicle from a respective JSON String
@@ -36,5 +36,16 @@ public class Vehicle {
 
         // Customer is empty at start
         customer = null;
+    }
+
+    // Methods for Vehicle
+
+    /**
+     * Updates the internal states of the car to drive to the desired Customer
+     *
+     * @param customer
+     */
+    public void driveTo(Customer customer) {
+        isAvailable = false;
     }
 }
